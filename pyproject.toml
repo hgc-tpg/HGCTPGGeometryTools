@@ -1,0 +1,19 @@
+[project]
+name = "geometrychecking"
+version = "0.1.0"
+dependencies = [
+  "uproot",
+  "numpy",
+  "pandas",
+  "click",
+  "matplotlib",
+  "pyarrow",
+]
+
+[tool.setuptools.packages]
+find = {}
+
+[project.scripts]
+extract-geometry = "geometrychecking.data:cli"
+create-geojson = "geometrychecking.geometry:cli"
+plot = "geometrychecking.plotting:cli"

@@ -1,0 +1,46 @@
+configfile: "config/config.yaml"
+
+OBJECTS = ['cells', 'triggercells', 'modules', 'cells_by_module']
+LAYERS_CEE = range(1,27)
+LAYERS_CEH = range(1,22)
+SUBDETS = ['cee']
+
+rule all:
+  input:
+    expand(f"resources/{config['geometry']}/geojson/cee_layer{{layer}}.json", layer=LAYERS_CEE),
+    expand(f"resources/{config['geometry']}/geojson/ceh_layer{{layer}}.json", layer=LAYERS_CEH)
+
+rule extract_geometry_cee:
+  input:
+    f"resources/{config['geometry']}.root"
+  output:
+    expand(f"resources/{config['geometry']}/cee_layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEE, object=OBJECTS)
+  shell:
+    f"extract-geometry --geometry {config['geometry']} --subdet cee"
+
+rule extract_geometry_ceh:
+  input:
+    f"resources/{config['geometry']}.root"
+  output:
+    expand(f"resources/{config['geometry']}/ceh_layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEH, object=OBJECTS)
+  shell:
+    f"extract-geometry --geometry {config['geometry']} --subdet ceh"
+
+rule create_geojson:
+  input:
+    expand(f"resources/{config['geometry']}/cee_layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEE, object=OBJECTS),
+    expand(f"resources/{config['geometry']}/ceh_layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEH, object=OBJECTS)
+  output:
+    expand(f"resources/{config['geometry']}/geojson/cee_layer{{layer}}.json", layer=LAYERS_CEE),
+    expand(f"resources/{config['geometry']}/geojson/ceh_layer{{layer}}.json", layer=LAYERS_CEH)
+  shell:
+    f"create-geojson --geometry {config['geometry']}"
+
+rule plot:
+  input:
+    expand(f"resources/{config['geometry']}/geojson/layer{{layer}}.json", layer=LAYERS_CEE),
+    expand(f"resources/{config['geometry']}/layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEE, object=OBJECTS),
+    expand(f"resources/{config['geometry']}/layer{{layer}}/cells_by_module.parquet", layer=LAYERS_CEE)
+  output:
+  shell:
+    f"plot --geometry {config['geometry']}"
