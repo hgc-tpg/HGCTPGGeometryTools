@@ -96,7 +96,7 @@ def cli(geometry_name,subdet):
     branches = {
         'cells': ['id', 'modid', 'zside', 'subdet', 'layer', 'x', 'y', 'corners_x', 'corners_y', 'corners_z','errorbits'],
         'triggercells': ['id', 'modid', 'zside', 'subdet', 'layer', 'x', 'y','errorbits'],
-        'modules': ['id', 'cells', 'zside', 'subdet', 'layer', 'errorbits', 'disconnected']
+        'modules': ['id', 'cells', 'triggercells', 'zside', 'subdet', 'layer', 'errorbits', 'disconnected']
     }
     arrays = to_awkward(trees, branches)
     if subdet=='cee': maxlayer=26
