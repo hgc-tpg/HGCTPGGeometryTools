@@ -7,8 +7,7 @@ SUBDETS = ['cee']
 
 rule all:
   input:
-    expand(f"resources/{config['geometry']}/geojson/cee_layer{{layer}}.json", layer=LAYERS_CEE),
-    expand(f"resources/{config['geometry']}/geojson/ceh_layer{{layer}}.json", layer=LAYERS_CEH)
+    f"results/{config['geometry']}/plot_errors.html"
 
 rule extract_geometry_cee:
   input:
@@ -38,9 +37,12 @@ rule create_geojson:
 
 rule plot:
   input:
-    expand(f"resources/{config['geometry']}/geojson/layer{{layer}}.json", layer=LAYERS_CEE),
-    expand(f"resources/{config['geometry']}/layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEE, object=OBJECTS),
-    expand(f"resources/{config['geometry']}/layer{{layer}}/cells_by_module.parquet", layer=LAYERS_CEE)
+    expand(f"resources/{config['geometry']}/geojson/cee_layer{{layer}}.json", layer=LAYERS_CEE),
+    expand(f"resources/{config['geometry']}/geojson/ceh_layer{{layer}}.json", layer=LAYERS_CEH),
+    expand(f"resources/{config['geometry']}/cee_layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEE, object=OBJECTS),
+    expand(f"resources/{config['geometry']}/ceh_layer{{layer}}/{{object}}.parquet", layer=LAYERS_CEH, object=OBJECTS),
+
   output:
+    f"results/{config['geometry']}/plot_errors.html"
   shell:
-    f"plot --geometry {config['geometry']}"
+    f"quarto render notebooks/plot_errors.ipynb --execute  --output-dir ../results/{config['geometry']} -P geometry_name:{config['geometry']}"

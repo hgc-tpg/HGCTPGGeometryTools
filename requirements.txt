@@ -1,5 +1,10 @@
+matplotlib
+snakemake
+uproot
+awkward
 numpy
 pandas
-uproot
 click
+shapely
 pyarrow
+papermill
