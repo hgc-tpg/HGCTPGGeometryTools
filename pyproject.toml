@@ -5,7 +5,7 @@ dependencies = [
   "matplotlib",
   "snakemake",
   "uproot",
-  "awkward"
+  "awkward",
   "numpy",
   "pandas",
   "click",
