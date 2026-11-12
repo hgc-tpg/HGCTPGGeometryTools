@@ -10,7 +10,7 @@ from shapely.geometry import Polygon, MultiPolygon
 import shapely
 
 def polygon_from_cell(cell):
-    nb_corners = len(cell.corners_x)/2
+    nb_corners = len(cell.corners_x)//2
     corners = [(x,y) for x,y in zip(cell.corners_x[:nb_corners], cell.corners_y[0:nb_corners])]
     return Polygon(corners)
 
@@ -110,7 +110,7 @@ def modules_from_json(input_directory):
         elif subdet=='ceh': maxlayer=21
         layers = range(1,maxlayer+1)
         for layer in layers:
-            with open(f'{input_directory}/module/{subdet}_layer{layer}.json', 'r') as f:
+            with open(f'{input_directory}/{subdet}_layer{layer}.json', 'r') as f:
                 modules[subdet][layer] = json.load(f)
                 for module in modules[subdet][layer]:
                     module['shape'] = shapely.from_geojson(json.dumps(module['shape']))
@@ -144,7 +144,7 @@ def stcs_from_json(input_directory):
 def cli(geometry_name, object_type):
     click.echo('> Reading geometry Parquet files')
     arrays = from_parquet(f'resources/{geometry_name}')
-    os.makedirs(f'resources/{geometry_name}/geojson', exist_ok=True)
+    os.makedirs(f'resources/{geometry_name}/geojson/{object_type}', exist_ok=True)
     subdets = {'module': ['cee', 'ceh'], 'stc':['ceh']}
     for subdet in subdets[object_type]:
         if subdet=='cee': maxlayer=26

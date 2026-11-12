@@ -29,7 +29,7 @@ def plot_invalid_tcs(modules, arrays, output_file):
 def cli(geometry_name):
     click.echo('> Reading geometry files')
     arrays = geometry.from_parquet(f'resources/{geometry_name}')
-    modules = geometry.from_json(f'resources/{geometry_name}/geojson')
+    modules = geometry.modules_from_json(f'resources/{geometry_name}/geojson/module')
     click.echo('> Plotting invalid TCs')
     os.makedirs(f'results/{geometry_name}/figs', exist_ok=True)
     plot_invalid_tcs(modules, arrays, f"results/{geometry_name}/figs/invalid_tcs.png")
